@@ -7,6 +7,7 @@ exports.signup = (req, res, next) => {
     const email = req.body.email;
     const password = req.body.password;
     const name = req.body.name;
+    const user_type = req.body.type;
 
     bycrypt
         .hash(password, 12)
@@ -15,6 +16,7 @@ exports.signup = (req, res, next) => {
                 email: email,
                 password: hashedPass,
                 name: name,
+                user_type: user_type
             });
             return user.save();
         })
@@ -66,6 +68,7 @@ exports.login = (req, res, next) => {
             res.status(200).json({
                 token: token,
                 userId: loadedUser._id,
+                user_type: loadedUser.user_type
             });
         })
         .catch((err) => {
