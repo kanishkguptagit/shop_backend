@@ -7,6 +7,8 @@ const authRouter = require('./routes/auth');
 dotenv.config();
 const app = express();
 
+app.use(express.json());
+
 app.use('/auth',authRouter);
 
 const mongoURL = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.3qwie.mongodb.net/user?retryWrites=true&w=majority`
