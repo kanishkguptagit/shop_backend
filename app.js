@@ -11,7 +11,7 @@ app.use(express.json());
 
 app.use('/auth',authRouter);
 
-const mongo_url = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.3qwie.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+const mongo_url = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.3qwie.mongodb.net/shopify?retryWrites=true&w=majority`;
 mongoose
     .connect(mongo_url, {
         useUnifiedTopology: true, 
