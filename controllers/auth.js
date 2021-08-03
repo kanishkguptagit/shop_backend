@@ -1,9 +1,20 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const { validationResult } = require('express-validator');
 
 const User = require("../models/user");
 
 exports.signup = (req, res, next) => {
+
+    const errors = validationResult(req);
+
+    if(!errors.isEmpty()){
+        return res.status(422).json({
+            message: errors.array()[0].msg,
+            result: "error"
+        })
+    }
+    
     const email = req.body.email;
     const password = req.body.password;
     const name = req.body.name;
@@ -32,9 +43,20 @@ exports.signup = (req, res, next) => {
                 result: "error",
             });
         });
+    
 };
 
 exports.login = (req, res, next) => {
+
+    const errors = validationResult(req);
+
+    if(!errors.isEmpty()){
+        return res.status(422).json({
+            message: errors.array()[0].msg,
+            result: "error"
+        })
+    }
+
     const email = req.body.email;
     const password = req.body.password;
     let loadedUser;
