@@ -1,6 +1,6 @@
 const { validationResult } = require("express-validator");
 
-const Product = require('../models/product');
+const Product = require("../models/product");
 
 exports.addProduct = (req, res) => {
     const errors = validationResult(req);
@@ -12,29 +12,57 @@ exports.addProduct = (req, res) => {
         });
     }
 
-    const name = (req.body.name).trim();
-    const type = (req.body.type).trim() || undefined;
-    const image = (req.body.image).trim() || undefined;
+    const name = req.body.name.trim();
+    const type = req.body.type.trim() || undefined;
+    const image = req.body.image.trim() || undefined;
     let tags = req.body.tags;
 
-    if(tags.length <= 0)
-    tags = undefined;
+    if (tags.length <= 0) tags = undefined;
 
     const product = new Product({
         name: name,
         product_type: type,
         product_image: image,
-        product_tags: tags
-    })
+        product_tags: tags,
+    });
 
     product.save();
 
     res.status(200).json({
         message: "Product added successfully",
-        result: "success"
-    })
+        result: "success",
+        id: product._id,
+    });
 };
 
-exports.deleteProduct = () => {};
+exports.deleteProduct = (req, res) => {
+    const prodId = req.params.prodId;
+
+    Product.findById(prodId)
+        .then((prod) => {
+            if (!prod) {
+                return res.status(404).json({
+                    message: "Product not found",
+                    result: "failed",
+                });
+            }
+            Product.findByIdAndDelete(prodId)
+                .then((result) => {
+                    return res.status(200).json({
+                        message: "Product removed successfully",
+                        result: "success",
+                    });
+                })
+                .catch((err) => {
+                    throw err;
+                });
+        })
+        .catch((err) => {
+            return res.status(500).json({
+                message: "Something went wrong",
+                result: "error",
+            });
+        });
+};
 
 exports.editProduct = () => {};
