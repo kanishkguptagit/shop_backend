@@ -3,7 +3,13 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 dotenv.config();
 
+const authRouter = require('./router/auth');
+
 const app = express();
+
+app.use(express.json());
+
+app.use('/auth',authRouter);
 
 const mongo_url = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.3qwie.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 mongoose
