@@ -4,7 +4,6 @@ const { validationResult } = require('express-validator');
 
 const User = require("../models/user");
 const PublishedProduct = require("../models/publishedProduct");
-const product = require("../models/product");
 
 exports.signup = (req, res, next) => {
 
@@ -108,6 +107,8 @@ exports.login = (req, res, next) => {
             );
 
             res.status(200).json({
+                email: loadedUser.email,
+                name: loadedUser.name,
                 token: token,
                 userId: loadedUser._id,
             });
