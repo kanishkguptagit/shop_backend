@@ -31,11 +31,8 @@ exports.addProduct = (req, res) => {
 
     product
         .save()
-        .then((result) => {            
-            return User.findById(req.userId);
-        })
-        .then(user => {
-            return PublishedProduct.findById(user.products_stored);
+        .then(result => {
+            return PublishedProduct.findOne({userId: req.userId});
         })
         .then((result) => {            
             result.products_added.push(product);
