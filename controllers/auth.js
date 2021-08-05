@@ -4,6 +4,7 @@ const { validationResult } = require('express-validator');
 
 const User = require("../models/user");
 const PublishedProduct = require("../models/publishedProduct");
+const Cart = require('../models/cart');
 
 exports.signup = (req, res, next) => {
 
@@ -22,6 +23,7 @@ exports.signup = (req, res, next) => {
 
     let user_id;
     let product_array_id;
+    let cart_id;
 
     bcrypt
         .hash(password, 12)
@@ -42,10 +44,18 @@ exports.signup = (req, res, next) => {
         })
         .then(result => {
             product_array_id = result._id;
+            const cart = new Cart({
+                userId: user_id
+            })
+            return cart.save();            
+        })
+        .then(result => {
+            cart_id = result._id;
             return User.findById(user_id);
         })
         .then(user => {
             user.products_stored = product_array_id;
+            user.product_cart = cart_id;
             return user.save();
         })
         .then((result) => {

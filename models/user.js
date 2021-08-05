@@ -18,6 +18,10 @@ const userSchema = new Schema({
     products_stored: {
         type: Schema.Types.ObjectId,
         ref: 'PublishedProduct',
+    },
+    product_cart: {
+        type: Schema.Types.ObjectId,
+        ref: 'Cart'
     }
 })
 
