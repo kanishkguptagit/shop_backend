@@ -18,7 +18,13 @@ const userSchema = new Schema({
     user_type: {
         type: String,        
         default: 'customer'
-    }
+    },
+    products_added: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Product'
+        }
+    ]
 })
 
 module.exports = mongoose.model('User', userSchema);
