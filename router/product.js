@@ -6,6 +6,8 @@ const productController = require("../controllers/product");
 
 const router = express.Router();
 
+router.get('/user-products/:userId', isAuth, productController.getUserProducts);
+
 router.get('/products', productController.getProducts);
 
 router.post(

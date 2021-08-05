@@ -113,4 +113,38 @@ exports.deleteProduct = (req, res) => {
         });
 };
 
+exports.getUserProducts = (req, res) => {
+    const userId = req.params.userId;
+
+    if (req.userId === userId) {
+        PublishedProduct.findOne({ userId: userId })
+            .populate("products_added")
+            .then((result) => {
+                if (!result) {
+                    res.status(404).json({
+                        message: "Products Not Found",
+                        result: "failed",
+                    });
+                }
+                res.status(200).json({
+                    products: result.products_added,
+                    message: "Products Found",
+                    result: "success",
+                });
+            })
+            .catch((err) => {
+                return res.status(500).json({
+                    message:
+                        "Something went wrong while fetching user products",
+                    result: "error",
+                });
+            });
+    } else {
+        res.status(401).json({
+            message: "Not Authorized",
+            result: "failed",
+        });
+    }
+};
+
 exports.editProduct = () => {};
