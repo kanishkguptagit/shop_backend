@@ -147,4 +147,51 @@ exports.getUserProducts = (req, res) => {
     }
 };
 
-exports.editProduct = () => {};
+exports.editProduct = (req, res) => {
+    const prodId = req.params.prodId;
+
+    const name = req.body.name.trim() || undefined;
+    const type = req.body.type.trim() || undefined;
+    const image = req.body.image.trim() || undefined;
+    let tags = req.body.tags;
+
+    if (tags.length <= 0) tags = undefined;
+
+    const newObj = {};
+    if (name) newObj.name = name;
+    if (type) newObj.product_type = type;
+    if (image) newObj.product_image = image;
+    if (tags) newObj.product_tags = tags;
+
+    Product.findById(prodId)
+        .then((prod) => {
+            if (!prod) {
+                res.status(404).json({
+                    message: "Product Not Found",
+                    result: "failed",
+                });
+            }
+            if (prod.creator.toString() !== req.userId) {
+                res.status(401).json({
+                    message: "Not Authorized",
+                    result: "failed",
+                });
+            }
+            Product.findByIdAndUpdate(prodId,newObj)
+                .then((result) => {
+                    res.status(200).json({
+                        message: "Updated successfully!",
+                        result: "success",
+                    });
+                })
+                .catch((err) => {
+                    throw err;
+                });
+        })
+        .catch((err) => {
+            return res.status(500).json({
+                message: "Something went wrong while fetching user products",
+                result: "error",
+            });
+        });
+};

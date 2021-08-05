@@ -17,7 +17,8 @@ const mongo_url = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_P
 mongoose
     .connect(mongo_url, {
         useUnifiedTopology: true, 
-        useNewUrlParser: true
+        useNewUrlParser: true,
+        useFindAndModify: false
     })
     .then((result) => {
         console.log("connected to mongo");
