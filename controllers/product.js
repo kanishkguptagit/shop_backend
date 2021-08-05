@@ -1,8 +1,24 @@
 const { validationResult } = require("express-validator");
 
 const Product = require("../models/product");
-const User = require("../models/user");
-const PublishedProduct = require('../models/publishedProduct');
+const PublishedProduct = require("../models/publishedProduct");
+
+exports.getProducts = (req, res) => {
+    Product.find()
+        .then((products) => {
+            res.status(200).json({
+                products: products,
+                message: "Products Found",
+                result: "success",
+            });
+        })
+        .catch((err) => {
+            res.status(500).json({
+                message: "Something went wrong while fetching",
+                result: "error",
+            });
+        });
+};
 
 exports.addProduct = (req, res) => {
     const errors = validationResult(req);
@@ -31,10 +47,10 @@ exports.addProduct = (req, res) => {
 
     product
         .save()
-        .then(result => {
-            return PublishedProduct.findOne({userId: req.userId});
+        .then((result) => {
+            return PublishedProduct.findOne({ userId: req.userId });
         })
-        .then((result) => {            
+        .then((result) => {
             result.products_added.push(product);
             return result.save();
         })
@@ -57,8 +73,8 @@ exports.deleteProduct = (req, res) => {
     const prodId = req.params.prodId;
 
     Product.findById(prodId)
-        .then((prod) => {            
-            if (!prod) {                
+        .then((prod) => {
+            if (!prod) {
                 return res.status(404).json({
                     message: "Product not found",
                     result: "failed",
@@ -67,13 +83,13 @@ exports.deleteProduct = (req, res) => {
             if (prod.creator.toString() === req.userId) {
                 Product.findByIdAndDelete(prodId)
                     .then((result) => {
-                        return PublishedProduct.findOne({userId: req.userId})                        
+                        return PublishedProduct.findOne({ userId: req.userId });
                     })
-                    .then(result => {
+                    .then((result) => {
                         result.products_added.pull(prodId);
                         return result.save();
                     })
-                    .then(result => {
+                    .then((result) => {
                         return res.status(200).json({
                             message: "Product removed successfully",
                             result: "success",
@@ -82,12 +98,11 @@ exports.deleteProduct = (req, res) => {
                     .catch((err) => {
                         throw err;
                     });
-            }
-            else{
+            } else {
                 res.status(403).json({
                     message: "Forbidden to delete this item",
-                    result: "failed"
-                })
+                    result: "failed",
+                });
             }
         })
         .catch((err) => {
