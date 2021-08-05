@@ -1,6 +1,7 @@
 const { validationResult } = require("express-validator");
 
 const Product = require("../models/product");
+const User = require("../models/user");
 
 exports.addProduct = (req, res) => {
     const errors = validationResult(req);
@@ -24,15 +25,31 @@ exports.addProduct = (req, res) => {
         product_type: type,
         product_image: image,
         product_tags: tags,
+        creator: req.userId
     });
 
-    product.save();
-
-    res.status(200).json({
-        message: "Product added successfully",
-        result: "success",
-        id: product._id,
-    });
+    product
+        .save()
+        .then((result) => {            
+            return User.findById(req.userId);
+        })
+        .then((user) => {            
+            user.products_added.push(product);
+            return user.save();
+        })
+        .then((result) => {            
+            res.status(200).json({
+                message: "Product added successfully",
+                result: "success",
+                id: product._id,
+            });
+        })
+        .catch((err) => {
+            res.status(500).json({
+                message: "Something went wrong",
+                result: "error",
+            });
+        });
 };
 
 exports.deleteProduct = (req, res) => {

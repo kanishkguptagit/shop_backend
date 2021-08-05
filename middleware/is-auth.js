@@ -11,10 +11,10 @@ module.exports = (req, res, next) => {
     }
 
     const userToken = authHeader.split(" ")[1];
-    let isToken;
+    let decodedToken;
 
     try {
-        isToken = jwt.verify(userToken, process.env.JWT_SECRET_KEY);
+        decodedToken = jwt.verify(userToken, process.env.JWT_SECRET_KEY);
     } catch {
         return res.status(500).json({
             message: "Something went wrong",
@@ -22,13 +22,13 @@ module.exports = (req, res, next) => {
         });
     }
 
-    if (!isToken) {
+    if (!decodedToken) {
         return res.status(401).json({
             message: "User not Authenticated",
             result: "failed",
         });
     }
 
-    req.userId = userToken.userId;
+    req.userId = decodedToken.userId;
     next();
 };

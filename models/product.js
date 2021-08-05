@@ -18,6 +18,11 @@ const productSchema = new Schema({
     product_tags: {
         type: [],
         default: ['product']
+    },
+    creator: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        required: true
     }
 })
 
