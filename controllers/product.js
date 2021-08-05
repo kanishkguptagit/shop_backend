@@ -70,11 +70,11 @@ exports.deleteProduct = (req, res) => {
             if (prod.creator.toString() === req.userId) {
                 Product.findByIdAndDelete(prodId)
                     .then((result) => {
-                        return User.findById(req.userId);
+                        return PublishedProduct.findOne({userId: req.userId})                        
                     })
-                    .then(user => {
-                        user.products_added.pull(prodId);
-                        return user.save();
+                    .then(result => {
+                        result.products_added.pull(prodId);
+                        return result.save();
                     })
                     .then(result => {
                         return res.status(200).json({
