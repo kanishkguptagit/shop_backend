@@ -15,16 +15,10 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
-    user_type: {
-        type: String,        
-        default: 'customer'
-    },
-    products_added: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: 'Product'
-        },
-    ]
+    products_stored: {
+        type: Schema.Types.ObjectId,
+        ref: 'PublishedProduct',
+    }
 })
 
 module.exports = mongoose.model('User', userSchema);

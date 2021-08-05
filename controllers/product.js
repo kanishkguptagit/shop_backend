@@ -2,6 +2,7 @@ const { validationResult } = require("express-validator");
 
 const Product = require("../models/product");
 const User = require("../models/user");
+const PublishedProduct = require('../models/publishedProduct');
 
 exports.addProduct = (req, res) => {
     const errors = validationResult(req);
@@ -33,9 +34,12 @@ exports.addProduct = (req, res) => {
         .then((result) => {            
             return User.findById(req.userId);
         })
-        .then((user) => {            
-            user.products_added.push(product);
-            return user.save();
+        .then(user => {
+            return PublishedProduct.findById(user.products_stored);
+        })
+        .then((result) => {            
+            result.products_added.push(product);
+            return result.save();
         })
         .then((result) => {
             res.status(200).json({

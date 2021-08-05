@@ -3,6 +3,8 @@ const jwt = require("jsonwebtoken");
 const { validationResult } = require('express-validator');
 
 const User = require("../models/user");
+const PublishedProduct = require("../models/publishedProduct");
+const product = require("../models/product");
 
 exports.signup = (req, res, next) => {
 
@@ -17,17 +19,34 @@ exports.signup = (req, res, next) => {
     
     const email = req.body.email;
     const password = req.body.password;
-    const name = req.body.name;
-    const user_type = req.body.type;
+    const name = req.body.name;    
+
+    let user_id;
+    let product_array_id;
+
     bcrypt
         .hash(password, 12)
         .then((hashedPass) => {
             const user = new User({
                 email: email,
                 password: hashedPass,
-                name: name,
-                user_type: user_type,
+                name: name,                
             });
+            return user.save();
+        })
+        .then(result => {
+            const product_array = new PublishedProduct({
+                userId: result._id
+            });
+            user_id = result._id;
+            return product_array.save();
+        })
+        .then(result => {
+            product_array_id = result._id;
+            return User.findById(user_id);
+        })
+        .then(user => {
+            user.products_stored = product_array_id;
             return user.save();
         })
         .then((result) => {
