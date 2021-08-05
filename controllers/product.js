@@ -25,7 +25,7 @@ exports.addProduct = (req, res) => {
         product_type: type,
         product_image: image,
         product_tags: tags,
-        creator: req.userId
+        creator: req.userId,
     });
 
     product
@@ -37,7 +37,7 @@ exports.addProduct = (req, res) => {
             user.products_added.push(product);
             return user.save();
         })
-        .then((result) => {            
+        .then((result) => {
             res.status(200).json({
                 message: "Product added successfully",
                 result: "success",
@@ -56,27 +56,42 @@ exports.deleteProduct = (req, res) => {
     const prodId = req.params.prodId;
 
     Product.findById(prodId)
-        .then((prod) => {
-            if (!prod) {
+        .then((prod) => {            
+            if (!prod) {                
                 return res.status(404).json({
                     message: "Product not found",
                     result: "failed",
                 });
             }
-            Product.findByIdAndDelete(prodId)
-                .then((result) => {
-                    return res.status(200).json({
-                        message: "Product removed successfully",
-                        result: "success",
+            if (prod.creator.toString() === req.userId) {
+                Product.findByIdAndDelete(prodId)
+                    .then((result) => {
+                        return User.findById(req.userId);
+                    })
+                    .then(user => {
+                        user.products_added.pull(prodId);
+                        return user.save();
+                    })
+                    .then(result => {
+                        return res.status(200).json({
+                            message: "Product removed successfully",
+                            result: "success",
+                        });
+                    })
+                    .catch((err) => {
+                        throw err;
                     });
+            }
+            else{
+                res.status(403).json({
+                    message: "Forbidden to delete this item",
+                    result: "failed"
                 })
-                .catch((err) => {
-                    throw err;
-                });
+            }
         })
         .catch((err) => {
             return res.status(500).json({
-                message: "Something went wrong",
+                message: "Something went wrong while deleting",
                 result: "error",
             });
         });

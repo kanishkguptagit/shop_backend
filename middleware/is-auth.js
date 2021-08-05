@@ -18,7 +18,7 @@ module.exports = (req, res, next) => {
     } catch {
         return res.status(500).json({
             message: "Something went wrong",
-            result: "erroe",
+            result: "error",
         });
     }
 
