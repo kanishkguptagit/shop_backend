@@ -5,6 +5,7 @@ const PublishedProduct = require("../models/publishedProduct");
 
 exports.getProducts = (req, res) => {
     Product.find()
+        .lean()
         .then((products) => {
             res.status(200).json({
                 products: products,
@@ -118,6 +119,7 @@ exports.getUserProducts = (req, res) => {
 
     PublishedProduct.findOne({ userId: userId })
         .populate("products_added")
+        .lean()
         .then((result) => {
             if (!result) {
                 res.status(404).json({
