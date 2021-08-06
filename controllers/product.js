@@ -63,7 +63,7 @@ exports.addProduct = (req, res) => {
         })
         .catch((err) => {
             res.status(500).json({
-                message: "Something went wrong",
+                message: "Something went wrong while adding",
                 result: "error",
             });
         });
@@ -114,37 +114,29 @@ exports.deleteProduct = (req, res) => {
 };
 
 exports.getUserProducts = (req, res) => {
-    const userId = req.params.userId;
+    const userId = req.userId.toString();
 
-    if (req.userId === userId) {
-        PublishedProduct.findOne({ userId: userId })
-            .populate("products_added")
-            .then((result) => {
-                if (!result) {
-                    res.status(404).json({
-                        message: "Products Not Found",
-                        result: "failed",
-                    });
-                }
-                res.status(200).json({
-                    products: result.products_added,
-                    message: "Products Found",
-                    result: "success",
+    PublishedProduct.findOne({ userId: userId })
+        .populate("products_added")
+        .then((result) => {
+            if (!result) {
+                res.status(404).json({
+                    message: "Products Not Found",
+                    result: "failed",
                 });
-            })
-            .catch((err) => {
-                return res.status(500).json({
-                    message:
-                        "Something went wrong while fetching user products",
-                    result: "error",
-                });
+            }
+            res.status(200).json({
+                products: result.products_added,
+                message: "Products Found",
+                result: "success",
             });
-    } else {
-        res.status(401).json({
-            message: "Not Authorized",
-            result: "failed",
+        })
+        .catch((err) => {
+            return res.status(500).json({
+                message: "Something went wrong while fetching user products",
+                result: "error",
+            });
         });
-    }
 };
 
 exports.editProduct = (req, res) => {
@@ -177,7 +169,7 @@ exports.editProduct = (req, res) => {
                     result: "failed",
                 });
             }
-            Product.findByIdAndUpdate(prodId,newObj)
+            Product.findByIdAndUpdate(prodId, newObj)
                 .then((result) => {
                     res.status(200).json({
                         message: "Updated successfully!",

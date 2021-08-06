@@ -67,7 +67,7 @@ exports.signup = (req, res, next) => {
         })
         .catch((err) => {
             res.status(500).json({
-                message: "Something went wrong",
+                message: "Something went wrong during signup",
                 result: "error",
             });
         });
@@ -125,7 +125,7 @@ exports.login = (req, res, next) => {
         })
         .catch((err) => {
             res.status(500).json({
-                message: "Something went wrong",
+                message: "Something went wrong during login",
                 result: "error",
             });
         });

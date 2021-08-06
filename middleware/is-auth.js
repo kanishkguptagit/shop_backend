@@ -17,7 +17,7 @@ module.exports = (req, res, next) => {
         decodedToken = jwt.verify(userToken, process.env.JWT_SECRET_KEY);
     } catch {
         return res.status(500).json({
-            message: "Something went wrong",
+            message: "Something went wrong during authentication",
             result: "error",
         });
     }
