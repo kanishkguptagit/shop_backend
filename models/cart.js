@@ -14,6 +14,6 @@ const cartSchema = new Schema({
             quantity: {type: Number, default:1}
         },
     ]
-})
+},{versionKey:false})
 
 module.exports = mongoose.model('Cart',cartSchema);
