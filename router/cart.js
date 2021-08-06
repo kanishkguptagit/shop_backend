@@ -9,4 +9,6 @@ router.get('/',isAuth, cartController.getCart);
 
 router.post('/',isAuth, cartController.addCart);
 
+router.delete('/:prodId', isAuth, cartController.deleteCart);
+
 module.exports = router;
