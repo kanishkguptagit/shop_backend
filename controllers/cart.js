@@ -23,20 +23,9 @@ exports.getCart = (req, res) => {
 
 exports.addCart = (req, res) => {
     const userId = req.userId.toString();
-    const prodId = req.body.prodId;
-
-    Cart.findOne({ userId: userId })
-        .then((cart) => {
-            const index = cart.cartProducts.findIndex(
-                (item) => item.prodId.toString() === prodId.toString()
-            );
-            if (index === -1) {
-                cart.cartProducts.push({ prodId: prodId, quatity: 1 });
-            } else {
-                cart.cartProducts[index].quantity++;
-            }
-            return cart.save();
-        })
+    const products = req.body.productList;
+    
+    Cart.updateOne({ userId: userId }, {cartProducts: products})
         .then((result) => {
             res.status(200).json({
                 message: "cart updated",
@@ -44,6 +33,7 @@ exports.addCart = (req, res) => {
             });
         })
         .catch((err) => {
+            console.log(err);
             res.status(500).json({
                 message: "Something went wrong while adding",
                 result: "error",
@@ -60,14 +50,14 @@ exports.deleteCart = (req, res) => {
             const index = cart.cartProducts.findIndex(
                 (item) => item.prodId.toString() === prodId.toString()
             );
-            if(index === -1){
+            if (index === -1) {
                 return res.status(404).json({
                     message: "Product not in the cart",
-                    result: "failed"
-                })
+                    result: "failed",
+                });
             }
             if (cart.cartProducts[index].quantity <= 1) {
-                cart.cartProducts.splice(index,1);
+                cart.cartProducts.splice(index, 1);
             } else {
                 cart.cartProducts[index].quantity--;
             }
