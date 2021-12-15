@@ -26,9 +26,9 @@ mongoose
     })
     .then((result) => {
         console.log("connected to mongo");
-        app.listen(process.env.SHOPIFY_BACKEND_PORT, () => {
+        app.listen(process.env.PORT, () => {
             console.log(
-                `server up and running on ${process.env.SHOPIFY_BACKEND_PORT}`
+                `server up and running on ${process.env.PORT}`
             );
         });
     })
